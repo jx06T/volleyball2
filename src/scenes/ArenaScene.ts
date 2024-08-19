@@ -461,10 +461,11 @@ export class ArenaScene extends Phaser.Scene {
         if (Math.random() < 0.01 && this.playerB.getData('onGround')) {
             this.playerB.setVelocityY(-4 * speed);
         }
+        const s = this.isDesktop ? 0.45 : 1.2
         if (this.playerB.x > this.ball.x - 85 && (this.ball.y > -5 || this.ball.y < -400 || this.isFirst)) {
-            this.playerB.setVelocityX(Math.max(this.playerB.getVelocity().x - 0.62, -2 * speed));
+            this.playerB.setVelocityX(Math.max(this.playerB.getVelocity().x - s, -2 * speed));
         } else if (this.playerB.x < this.ball.x - 95 && this.ball.x < 900 && (this.ball.y > -5 || this.ball.y < -400 || this.isFirst)) {
-            this.playerB.setVelocityX(Math.min(this.playerB.getVelocity().x + 0.62, 2 * speed));
+            this.playerB.setVelocityX(Math.min(this.playerB.getVelocity().x + s, 2 * speed));
         } else {
             this.playerB.setVelocityX(this.playerB.getVelocity().x * 0.85);
         }
@@ -524,6 +525,7 @@ export class ArenaScene extends Phaser.Scene {
                 ball.setVelocityY(-20);
                 return
             }
+            ball.setY(ball.y - 20);
             ball.setVelocityX(ball.body!.velocity.x + player.body!.velocity.x * 4.35);
             ball.setVelocityY(ball.body!.velocity.y + 20);
         } else {

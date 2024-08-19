@@ -14,22 +14,25 @@ export class PauseScene extends Phaser.Scene {
 
         const y = this.parent == "ARENA" ? 450 : 720
         const s = this.parent == "ARENA" ? 1.1 : 0.7
-        const s2 = this.parent == "ARENA" ? 0 : 210
+        const s2 = this.parent == "ARENA" ? 0 : 230
         let reset = this.add.image(500 + s2, y, 'reset').setInteractive().setScale(s);
         reset.on('pointerover', () => reset.setScale(s + 0.1));
         reset.on('pointerout', () => reset.setScale(s));
         reset.on('pointerup', () => this.returnToParent('reset'));
 
-        let play = this.add.image(960, y, 'play').setInteractive().setScale(s + 0.2);
-        play.on('pointerover', () => play.setScale(s + 0.3));
-        play.on('pointerout', () => play.setScale(s + 0.2));
-        play.on('pointerup', () => this.returnToParent('resume'));
 
         let home = this.add.image(1370 - s2, y, 'home2').setInteractive().setScale(s).setAngle(-1.9);
         home.on('pointerover', () => home.setScale(s + 0.1));
         home.on('pointerout', () => home.setScale(s));
         home.on('pointerup', () => this.returnToParent('home'));
 
+        if (this.parent !== "ARENA") {
+            return
+        }
+        let play = this.add.image(960, y, 'play').setInteractive().setScale(s + 0.2);
+        play.on('pointerover', () => play.setScale(s + 0.3));
+        play.on('pointerout', () => play.setScale(s + 0.2));
+        play.on('pointerup', () => this.returnToParent('resume'));
     }
 
     returnToParent(action: string) {
