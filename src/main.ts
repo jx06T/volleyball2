@@ -7,7 +7,8 @@ import { PauseScene } from "./scenes/PauseScene";
 import { GameOverScene } from "./scenes/GameOverScene";
 
 const config = {
-    type: Phaser.AUTO,
+    // type: Phaser.AUTO,
+    type: Phaser.WEBGL,
     width: 1900,
     height: 1000,
     parent: 'game-container',

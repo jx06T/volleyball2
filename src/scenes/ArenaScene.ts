@@ -24,7 +24,6 @@ export class ArenaScene extends Phaser.Scene {
             case 'resume':
                 // this.matter.world.enabled = true
                 this.scene.resume()
-                // 實現恢復遊戲的邏輯
                 break;
             case 'home':
                 this.scene.start("MENU")
@@ -78,7 +77,7 @@ export class ArenaScene extends Phaser.Scene {
             this.timeScale = 2
             this.matter.world.engine.timing.timeScale = 1.5;
         }
-
+        this.matter.world.update60Hz()
         this.add.image(-5, -35, "bgImg2").setOrigin(0).setDepth(0);
 
         this.ball = this.matter.add.sprite(950, -2000, "ball").setDepth(1).setScale(0.65);
@@ -459,7 +458,12 @@ export class ArenaScene extends Phaser.Scene {
     robot(): void {
         let speed = this.isGameResetting ? 0 : 4
         speed = this.playerB.y > 600 ? speed : speed / 2;
-        const s = this.isDesktop ? 0.6 : 1.4
+        let s = this.isDesktop ? 0.8 : 1.3
+
+        if (this.playerR.getData('killCount') > 4) {
+            s = s * 0.7
+        }
+
         let target = this.ball.x + (this.ball.getVelocity().x / this.ball.getVelocity().y * Math.max(1, 600 - this.ball.y)) * 1.1 - 100
 
         if (this.ball.getVelocity().x < -10 && this.playerB.getData('onGround')) {
@@ -519,6 +523,8 @@ export class ArenaScene extends Phaser.Scene {
         }
 
         this.ball.setVelocityX(this.ball.body!.velocity.x * 0.997);
+
+        this.score.setText(this.playerR.getData('killCount'));
     }
 
     hitBall(ball: Phaser.Physics.Matter.Sprite, player: Phaser.Physics.Matter.Sprite) {
@@ -539,12 +545,16 @@ export class ArenaScene extends Phaser.Scene {
             Math.sin(angle) < 0 ? Math.sin(angle) * speed - 5 : 10,
         );
 
-       
+
         // 根據玩家的移動添加額外的速度
         if (player.y < 580) {
             if (this.isFirst || player.getData('kill') == true || player.getData('onNet')) {
                 ball.setVelocityY(-20);
                 return
+            }
+            if (Math.abs(player.body!.velocity.x) > 2.5 || Math.abs(ball.body!.velocity.x + player.body!.velocity.x * 4.35) > 20) {
+                player.setData('killCount', player.getData('killCount') + 1);
+                console.log("!")
             }
             player.setData('kill', true)
             ball.setVelocityX(ball.body!.velocity.x + player.body!.velocity.x * 4.35);
@@ -559,6 +569,8 @@ export class ArenaScene extends Phaser.Scene {
 
     resetGame() {
         this.isFirst = true
+        this.playerB.setData('killCount', 0);
+        this.playerR.setData('killCount', 0);
 
         let countdownText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 300, '3', {
             fontFamily: 'Pacifico',
