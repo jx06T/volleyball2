@@ -200,7 +200,7 @@ export class ArenaScene extends Phaser.Scene {
                     }
 
 
-                    const winScore = 1
+                    const winScore = 11
                     if (this.scoreB >= winScore || this.scoreR >= winScore) {
                         let black = this.add.rectangle(0, 0, 1900, 1000, 0x931515).setAlpha(0).setOrigin(0).setDepth(3);
                         let c = 0;
