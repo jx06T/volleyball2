@@ -55,8 +55,8 @@ export class GameOverScene extends Phaser.Scene {
         const angle = -0.5 + Math.sin(time / 150) * 1;
         // this.titleImg.setScale(scale);
         this.titleImg.setAngle(angle);
-        this.bg.setAlpha(this.bg.alpha + 0.01)
-        this.titleImg.setAlpha(this.titleImg.alpha + 0.01)
+        this.bg.setAlpha(this.bg.alpha + 0.02)
+        this.titleImg.setAlpha(this.titleImg.alpha + 0.02)
     }
 
 }

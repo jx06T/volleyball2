@@ -122,7 +122,7 @@ export class ArenaScene extends Phaser.Scene {
 
         this.ground = this.matter.add.image(950, 982, 'ground', undefined, { restitution: 0.4, isStatic: true }).setDepth(0);
 
-        this.net = this.matter.add.image(950, 790, 'net', undefined, { restitution: 0.4, isStatic: true }).setDepth(0).setScale(0.7);
+        this.net = this.matter.add.image(950, 785, 'net', undefined, { restitution: 0.4, isStatic: true }).setDepth(0).setScale(0.7);
         this.net.setBody({
             type: "rectangle",
             width: this.net.width * 0.58,
@@ -302,10 +302,12 @@ export class ArenaScene extends Phaser.Scene {
                 if ((bodyA === this.ball.body && bodyB === this.playerR.body) ||
                     (bodyA === this.playerR.body && bodyB === this.ball.body)) {
                     this.playerR.setData('hit', false);
+                    this.playerR.setData('kill', false);
                 }
                 if ((bodyA === this.ball.body && bodyB === this.playerB.body) ||
                     (bodyA === this.playerB.body && bodyB === this.ball.body)) {
                     this.playerB.setData('hit', false);
+                    this.playerB.setData('kill', false);
                 }
             });
         });
@@ -316,7 +318,7 @@ export class ArenaScene extends Phaser.Scene {
         speed = this.playerR.y > 650 ? speed : speed / 2;
 
         if (this.cursors.up.isDown && this.playerR.getData('onGround')) {
-            this.playerR.setVelocityY(-4 * speed);
+            this.playerR.setVelocityY(-3.9 * speed);
         }
         if (this.cursors.left.isDown) {
             this.playerR.setVelocityX(-2 * speed);
@@ -331,7 +333,7 @@ export class ArenaScene extends Phaser.Scene {
 
         if (this.mode == "pvp") {
             if (this.keys.w.isDown && this.playerB.getData('onGround')) {
-                this.playerB.setVelocityY(-4 * speed);
+                this.playerB.setVelocityY(-3.9 * speed);
             }
             if (this.keys.a.isDown) {
                 this.playerB.setVelocityX(-2 * speed);
@@ -399,7 +401,7 @@ export class ArenaScene extends Phaser.Scene {
 
         if ((angle < 3.15 && angle > -0.1) || angle < -3) {
             if (player.getData('onGround')) {
-                player.setVelocityY(-4 * speed);
+                player.setVelocityY(-3.8 * speed);
             }
 
             if (angle > 2.2 || angle < -3) {
@@ -457,20 +459,38 @@ export class ArenaScene extends Phaser.Scene {
     robot(): void {
         let speed = this.isGameResetting ? 0 : 4
         speed = this.playerB.y > 600 ? speed : speed / 2;
+        const s = this.isDesktop ? 0.6 : 1.4
+        let target = this.ball.x + (this.ball.getVelocity().x / this.ball.getVelocity().y * Math.max(1, 600 - this.ball.y)) * 1.1 - 100
 
-        if (Math.random() < 0.01 && this.playerB.getData('onGround')) {
-            this.playerB.setVelocityY(-4 * speed);
+        if (this.ball.getVelocity().x < -10 && this.playerB.getData('onGround')) {
+            target -= 200
         }
-        const s = this.isDesktop ? 0.45 : 1.2
-        if (this.playerB.x > this.ball.x - 85 && (this.ball.y > -5 || this.ball.y < -400 || this.isFirst)) {
+        if (this.ball.getVelocity().x < -3 && this.ball.y < 400 && this.playerB.getData('onGround')) {
+            target -= 200
+        }
+        if (Math.abs(this.playerB.x - this.ball.x + 25) < 50 && Math.abs(this.playerB.y - this.ball.y - 260) < 15) {
+            this.playerB.setVelocityX(2 * speed);
+            if (!this.playerB.getData('onGround')) {
+                target += 500
+            }
+            target += 200
+        }
+        if (this.playerB.x > target && !(Math.abs(this.playerB.x - this.ball.x) < 50 && Math.abs(this.playerB.y - this.ball.y - 250) < 10)) {
             this.playerB.setVelocityX(Math.max(this.playerB.getVelocity().x - s, -2 * speed));
-        } else if (this.playerB.x < this.ball.x - 95 && this.ball.x < 900 && (this.ball.y > -5 || this.ball.y < -400 || this.isFirst)) {
+        } else if (this.playerB.x < target) {
             this.playerB.setVelocityX(Math.min(this.playerB.getVelocity().x + s, 2 * speed));
         } else {
             this.playerB.setVelocityX(this.playerB.getVelocity().x * 0.85);
         }
         if (this.playerB.x < 100) {
-            this.playerB.setVelocityX(8);
+            this.playerB.setVelocityX(4 * speed);
+        }
+
+        if (Math.abs(this.playerB.y - this.ball.y - 570) < 50 && this.ball.getVelocity().y > 0 && Math.abs(this.playerB.x - this.ball.x + 150) < 50) {
+            this.playerB.setVelocityY(-3.8 * speed);
+        }
+        if (Math.random() < 0.01 && this.playerB.getData('onGround')) {
+            // this.playerB.setVelocityY(-3.9 * speed);
         }
     }
 
@@ -519,15 +539,17 @@ export class ArenaScene extends Phaser.Scene {
             Math.sin(angle) < 0 ? Math.sin(angle) * speed - 5 : 10,
         );
 
+       
         // 根據玩家的移動添加額外的速度
         if (player.y < 580) {
-            if (this.isFirst || player.getData('onNet')) {
+            if (this.isFirst || player.getData('kill') == true || player.getData('onNet')) {
                 ball.setVelocityY(-20);
                 return
             }
-            ball.setY(ball.y - 20);
+            player.setData('kill', true)
             ball.setVelocityX(ball.body!.velocity.x + player.body!.velocity.x * 4.35);
             ball.setVelocityY(ball.body!.velocity.y + 20);
+            // ball.setX(ball.x + player.body!.velocity.x * 8)
         } else {
             ball.setVelocityX(ball.body!.velocity.x + player.body!.velocity.x * 1.6 + (player.body!.velocity.y < -1 ? player.body!.velocity.x * 0.5 : 0));
             ball.setVelocityY(ball.body!.velocity.y + (player.body!.velocity.y < -8 ? player.body!.velocity.y * 0.7 : 2));
