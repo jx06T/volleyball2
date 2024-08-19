@@ -12,11 +12,11 @@ export class MenuScene extends Phaser.Scene {
 
         this.add.image(0, 0, "bgImg").setOrigin(0).setDepth(0);
 
-        this.titleImg = this.add.image(this.game.renderer.width / 2, 225, "Title").setDepth(1)
+        this.titleImg = this.add.image(this.game.renderer.width / 2, 123, "Title").setDepth(1)
 
-        let playButton1 = this.add.image(this.game.renderer.width / 2, 520, "PVP").setDepth(1)
+        let playButton1 = this.add.image(this.game.renderer.width / 2, 260, "PVP").setDepth(1)
 
-        let playButton2 = this.add.image(this.game.renderer.width / 2, 750, "PVC").setDepth(1)
+        let playButton2 = this.add.image(this.game.renderer.width / 2, 375, "PVC").setDepth(1)
 
         /* 
             PointerEvents:

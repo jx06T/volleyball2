@@ -13,6 +13,11 @@ interface point {
     RisD?: boolean;
     LisD?: boolean;
 }
+interface SpeedSetting {
+    LR: number;
+    U: number;
+    B: number;
+}
 
 
 export class ArenaScene extends Phaser.Scene {
@@ -55,6 +60,7 @@ export class ArenaScene extends Phaser.Scene {
 
     private btnR: btn = { x: 0, y: 0 };
     private btnL: btn = { x: 0, y: 0 };
+    private SpeedSetting: SpeedSetting = { LR: 4, U: 6.8, B: 8 };
 
     private mode: string = "";
     constructor() {
@@ -74,20 +80,27 @@ export class ArenaScene extends Phaser.Scene {
     create() {
         this.isGameResetting = true
 
-        if (!this.isDesktop) {
-            this.timeScale = 2
-            this.matter.world.engine.timing.timeScale = 1.5;
-        }
-        this.matter.world.update60Hz()
-        this.add.image(-5, -35, "bgImg2").setOrigin(0).setDepth(0);
-
-        this.ball = this.matter.add.sprite(950, -2000, "ball").setDepth(1).setScale(0.65);
+        this.ball = this.matter.add.sprite(475, -2000, "ball", undefined, { restitution: 0.95 }).setDepth(1).setScale(0.65);
         this.ball.setCircle(this.ball.width / 2 * 0.65);
-        this.ball.setBounce(0.95);  // 設置完全反彈
+        this.ball.setBounce(0.95); // 設置完全反彈
+        this.ball.setFriction(0)
         this.ball.setFrictionAir(0.012);  // 設置空氣阻力為 0
         this.ball.setFixedRotation();
 
-        this.playerB = this.matter.add.sprite(500, 500, "playerB").setDepth(1).setScale(0.62);
+        if (!this.isDesktop) {
+            // this.timeScale = 2
+            this.matter.world.setGravity(0, 1.1);
+            this.SpeedSetting.LR = 8
+            this.SpeedSetting.U = 10.5
+            this.SpeedSetting.B = 11
+            // this.ball.setBounce(0.6); // 設置完全反彈
+            // this.matter.world.engine.timing.timeScale = 1.5;
+        }
+        this.matter.world.update60Hz()
+        this.add.image(-2.5, -17.5, "bgImg2").setOrigin(0).setDepth(0);
+
+
+        this.playerB = this.matter.add.sprite(250, 250, "playerB").setDepth(1).setScale(0.62);
         this.playerB.setBounce(0.4);
         this.playerB.setDensity(0.7);
         const points = [
@@ -105,24 +118,24 @@ export class ArenaScene extends Phaser.Scene {
         ];
         this.playerB.setBody({
             type: 'fromVerts',
-            verts: points.map(e => ({ x: e.x * 0.95, y: e.y * 0.95 }))
+            verts: points.map(e => ({ x: e.x * 0.475, y: e.y * 0.475 }))
         });
         this.playerB.setFixedRotation();
 
-        this.playerR = this.matter.add.sprite(1400, 500, "playerR").setDepth(1).setScale(0.62);
+        this.playerR = this.matter.add.sprite(700, 250, "playerR").setDepth(1).setScale(0.62);
         this.playerR.setBounce(0.4);
         this.playerR.setDensity(0.7);
         this.playerR.setBody({
             type: 'fromVerts',
-            verts: points.map(e => ({ x: -0.95 * e.x, y: e.y * 0.95 })),
+            verts: points.map(e => ({ x: -0.475 * e.x, y: e.y * 0.475 })),
 
         });
         this.playerR.setFixedRotation();
 
 
-        this.ground = this.matter.add.image(950, 982, 'ground', undefined, { restitution: 0.4, isStatic: true }).setDepth(0);
+        this.ground = this.matter.add.image(475, 491, 'ground', undefined, { restitution: 0.4, isStatic: true }).setDepth(0);
 
-        this.net = this.matter.add.image(950, 785, 'net', undefined, { restitution: 0.4, isStatic: true }).setDepth(0).setScale(0.7);
+        this.net = this.matter.add.image(475, 392.5, 'net', undefined, { restitution: 0.4, isStatic: true }).setDepth(0).setScale(0.7);
         this.net.setBody({
             type: "rectangle",
             width: this.net.width * 0.58,
@@ -144,15 +157,15 @@ export class ArenaScene extends Phaser.Scene {
             this.setupTouchControls()
         }
 
-        this.arrow = this.add.image(-5, 0, "arrow").setOrigin(0).setDepth(0);
+        this.arrow = this.add.image(-2.5, 0, "arrow").setOrigin(0).setDepth(0);
 
-        this.score = this.add.text(35, 5, '0:0', {
+        this.score = this.add.text(17.5, 2.5, '0:0', {
             fontFamily: 'Pacifico',
-            fontSize: '84px',
+            fontSize: '42px',
             color: '#ffffff'
         }).setDepth(2);
 
-        let homeButton = this.add.image(this.game.renderer.width - 70, 75, "home").setDepth(1)
+        let homeButton = this.add.image(this.game.renderer.width - 35, 37.5, "home").setDepth(1)
         homeButton.setInteractive();
 
         homeButton.on("pointerover", () => {
@@ -181,8 +194,8 @@ export class ArenaScene extends Phaser.Scene {
         const bounds = {
             left: 0,
             right: width,
-            top: -2000,
-            bottom: height
+            top: -1000,
+            bottom: height + 500
         };
 
         this.matter.world.setBounds(
@@ -208,7 +221,7 @@ export class ArenaScene extends Phaser.Scene {
 
                     const winScore = 11
                     if (this.scoreB >= winScore || this.scoreR >= winScore) {
-                        let black = this.add.rectangle(0, 0, 1900, 1000, 0x931515).setAlpha(0).setOrigin(0).setDepth(3);
+                        let black = this.add.rectangle(0, 0, 950, 500, 0x931515).setAlpha(0).setOrigin(0).setDepth(3);
                         let c = 0;
                         const countdownInterval = this.time.addEvent({
                             delay: 5,
@@ -314,31 +327,31 @@ export class ArenaScene extends Phaser.Scene {
     }
 
     keyboard(): void {
-        let speed: number = this.isGameResetting ? 0 : 4;
-        speed = this.playerR.y > 650 ? speed : speed / 2;
+        let speed: number = this.isGameResetting ? 0 : 1;
+        speed = this.playerR.y > 325 ? speed : speed / 2;
 
         if (this.cursors.up.isDown && this.playerR.getData('onGround')) {
-            this.playerR.setVelocityY(-3.9 * speed);
+            this.playerR.setVelocityY(-this.SpeedSetting.U * speed);
         }
         if (this.cursors.left.isDown) {
-            this.playerR.setVelocityX(-2 * speed);
+            this.playerR.setVelocityX(-this.SpeedSetting.LR * speed);
         } else if (this.cursors.right.isDown) {
-            this.playerR.setVelocityX(2 * speed);
+            this.playerR.setVelocityX(this.SpeedSetting.LR * speed);
         } else {
             this.playerR.setVelocityX(0);
         }
 
-        speed = this.mode == "pvp" ? (this.isGameResetting ? 0 : 4) : (this.isGameResetting ? 0 : 3)
-        speed = this.playerB.y > 650 ? speed : speed / 2;
+        speed = this.isGameResetting ? 0 : 1
+        speed = this.playerB.y > 325 ? speed : speed / 2;
 
         if (this.mode == "pvp") {
             if (this.keys.w.isDown && this.playerB.getData('onGround')) {
-                this.playerB.setVelocityY(-3.9 * speed);
+                this.playerB.setVelocityY(-this.SpeedSetting.U * speed);
             }
             if (this.keys.a.isDown) {
-                this.playerB.setVelocityX(-2 * speed);
+                this.playerB.setVelocityX(-this.SpeedSetting.LR * speed);
             } else if (this.keys.d.isDown) {
-                this.playerB.setVelocityX(2 * speed);
+                this.playerB.setVelocityX(this.SpeedSetting.LR * speed);
             } else {
                 this.playerB.setVelocityX(0);
             }
@@ -346,8 +359,8 @@ export class ArenaScene extends Phaser.Scene {
     }
 
     addBtn(): void {
-        this.btnR.x = 1600;
-        this.btnR.y = 650;
+        this.btnR.x = 800;
+        this.btnR.y = 325;
         this.btnR.RU = this.add.image(this.btnR.x, this.btnR.y, "btnRU").setDepth(2).setAlpha(0.3).setScale(1.2)
         this.btnR.LU = this.add.image(this.btnR.x, this.btnR.y, "btnLU").setDepth(2).setAlpha(0.3).setScale(1.2)
         this.btnR.U = this.add.image(this.btnR.x, this.btnR.y, "btnU").setDepth(2).setAlpha(0.3).setScale(1.2)
@@ -357,8 +370,8 @@ export class ArenaScene extends Phaser.Scene {
         if (this.mode == "pvc") {
             return
         }
-        this.btnL.x = 300;
-        this.btnL.y = 650;
+        this.btnL.x = 150;
+        this.btnL.y = 325;
         this.btnL.RU = this.add.image(this.btnL.x, this.btnL.y, "btnRU").setDepth(2).setAlpha(0.3).setScale(1.2)
         this.btnL.LU = this.add.image(this.btnL.x, this.btnL.y, "btnLU").setDepth(2).setAlpha(0.3).setScale(1.2)
         this.btnL.U = this.add.image(this.btnL.x, this.btnL.y, "btnU").setDepth(2).setAlpha(0.3).setScale(1.2)
@@ -368,11 +381,11 @@ export class ArenaScene extends Phaser.Scene {
     }
 
     updatePlayerMovement(pointer: Phaser.Input.Pointer, isDown: boolean): void {
-        let speed: number = this.isGameResetting ? 0 : 4;
-        speed = this.playerR.y > 600 ? speed : speed / 2;
+        let speed: number = this.isGameResetting ? 0 : 1;
+        speed = this.playerR.y > 300 ? speed : speed / 2;
 
-        const player = pointer.x < 950 ? (this.mode == "pvp" ? this.playerB : null) : this.playerR;
-        const btn = pointer.x < 950 ? this.btnL : this.btnR;
+        const player = pointer.x < 475 ? (this.mode == "pvp" ? this.playerB : null) : this.playerR;
+        const btn = pointer.x < 475 ? this.btnL : this.btnR;
         let angle = Phaser.Math.Angle.Between(pointer.x, pointer.y, btn.x, btn.y);
 
         if (!player) {
@@ -385,7 +398,7 @@ export class ArenaScene extends Phaser.Scene {
         btn.RD?.setScale(1)
         btn.LD?.setScale(1)
 
-        if (pointer.x < 950) {
+        if (pointer.x < 475) {
             this.pointData.LP = pointer
             this.pointData.LisD = isDown
 
@@ -401,15 +414,15 @@ export class ArenaScene extends Phaser.Scene {
 
         if ((angle < 3.15 && angle > -0.1) || angle < -3) {
             if (player.getData('onGround')) {
-                player.setVelocityY(-3.8 * speed);
+                player.setVelocityY(-this.SpeedSetting.U * speed);
             }
 
             if (angle > 2.2 || angle < -3) {
-                player.setVelocityX(2 * speed);
+                player.setVelocityX(this.SpeedSetting.LR * speed);
                 btn.RU?.setScale(1.15)
 
             } else if (angle < 0.95) {
-                player.setVelocityX(-2 * speed);
+                player.setVelocityX(-this.SpeedSetting.LR * speed);
                 btn.LU?.setScale(1.15)
 
             } else {
@@ -419,11 +432,11 @@ export class ArenaScene extends Phaser.Scene {
         }
 
         if (angle > -1.5 && angle < -0.1) {
-            player.setVelocityX(-2 * speed);
+            player.setVelocityX(-this.SpeedSetting.LR * speed);
             btn.LD?.setScale(1.15)
 
         } else if (angle < -1.5 && angle > -3) {
-            player.setVelocityX(2 * speed);
+            player.setVelocityX(this.SpeedSetting.LR * speed);
             btn.RD?.setScale(1.15)
         }
 
@@ -457,51 +470,59 @@ export class ArenaScene extends Phaser.Scene {
     }
 
     robot(): void {
-        let speed = this.isGameResetting ? 0 : 4
-        speed = this.playerB.y > 600 ? speed : speed / 2;
-        let s = this.isDesktop ? 0.8 : 1.3
+        let speed = this.isGameResetting ? 0 : 1
+        speed = this.playerB.y > 300 ? speed : speed / 2;
+        let s = this.isDesktop ? 0.4 : 0.7
 
         if (this.playerR.getData('killCount') > 4) {
             s = s * 0.7
         }
 
-        let target = this.ball.x + (this.ball.getVelocity().x / this.ball.getVelocity().y * Math.max(1, 600 - this.ball.y)) * 1.1 - 100
+        let target = this.ball.x + (this.ball.getVelocity().x / this.ball.getVelocity().y * Math.max(1, 300 - this.ball.y)) * 1.15 - 50
 
-        if (this.ball.getVelocity().x < -10 && this.playerB.getData('onGround')) {
-            target -= 200
+        if (this.ball.getVelocity().x < -5 && this.playerB.getData('onGround')) {
+            target -= 80 / (this.ball.y > 320 ? 2 : 1)
         }
-        if (this.ball.getVelocity().x < -3 && this.ball.y < 400 && this.playerB.getData('onGround')) {
-            target -= 200
+        if (this.ball.getVelocity().x < -1.5 && this.ball.y < 200 && this.playerB.getData('onGround')) {
+            target -= 90 / (this.ball.y > 320 ? 2 : 1)
         }
-        if (Math.abs(this.playerB.x - this.ball.x + 25) < 50 && Math.abs(this.playerB.y - this.ball.y - 260) < 15) {
-            this.playerB.setVelocityX(2 * speed);
+        if (Math.abs(this.playerB.x - this.ball.x + 13) < 25 && Math.abs(this.playerB.y - this.ball.y - 130) < 8) {
+            this.playerB.setVelocityX(0.6 * this.SpeedSetting.LR * speed);
             if (!this.playerB.getData('onGround')) {
-                target += 500
+                target += 240
             }
-            target += 200
+            target += 100
         }
-        if (this.playerB.x > target && !(Math.abs(this.playerB.x - this.ball.x) < 50 && Math.abs(this.playerB.y - this.ball.y - 250) < 10)) {
-            this.playerB.setVelocityX(Math.max(this.playerB.getVelocity().x - s, -2 * speed));
+        if (this.playerB.x > target && !(Math.abs(this.playerB.x - this.ball.x) < 25 && Math.abs(this.playerB.y - this.ball.y - 125) < 5)) {
+            this.playerB.setVelocityX(Math.max(this.playerB.getVelocity().x - s, -this.SpeedSetting.LR * speed));
+
         } else if (this.playerB.x < target) {
-            this.playerB.setVelocityX(Math.min(this.playerB.getVelocity().x + s, 2 * speed));
+            this.playerB.setVelocityX(Math.min(this.playerB.getVelocity().x + s, this.SpeedSetting.LR * speed));
+
         } else {
             this.playerB.setVelocityX(this.playerB.getVelocity().x * 0.85);
         }
-        if (this.playerB.x < 100) {
-            this.playerB.setVelocityX(4 * speed);
+
+        if (this.playerB.x < 35) {
+            this.playerB.setVelocityX(this.SpeedSetting.LR * speed / 2);
         }
 
-        if (Math.abs(this.playerB.y - this.ball.y - 570) < 50 && this.ball.getVelocity().y > 0 && Math.abs(this.playerB.x - this.ball.x + 150) < 50) {
-            this.playerB.setVelocityY(-3.8 * speed);
+        if (Math.abs(this.playerB.y - this.ball.y - 290) < 28 && this.ball.getVelocity().y > 0 && Math.abs(this.playerB.x - this.ball.x + 75) < 28) {
+            this.playerB.setVelocityY(-this.SpeedSetting.U * speed);
         }
-        if (Math.random() < 0.01 && this.playerB.getData('onGround')) {
-            // this.playerB.setVelocityY(-3.9 * speed);
-        }
+
     }
 
     update(time: number, delta: number): void {
-
-        if (this.ball.y < -80 && !this.isGameResetting) {
+        if (Math.random() < 0.01) {
+            this.ball.setVelocityX(this.ball.getVelocity().x - 0.01)
+            this.ball.setVelocityY(this.ball.getVelocity().y - 0.01)
+        }
+        if (Math.random() < 0.01) {
+            this.ball.setVelocityX(this.ball.getVelocity().x + 0.01)
+            this.ball.setVelocityY(this.ball.getVelocity().y + 0.01)
+        }
+        if (this.ball.y < -40 && !this.isGameResetting) {
             this.arrow.setVisible(true)
             this.arrow.setX(this.ball.x)
         } else {
@@ -525,47 +546,46 @@ export class ArenaScene extends Phaser.Scene {
 
         this.ball.setVelocityX(this.ball.body!.velocity.x * 0.997);
 
-        this.score.setText(this.playerR.getData('killCount'));
+        // this.score.setText(this.playerR.getData('killCount'));
     }
 
     hitBall(ball: Phaser.Physics.Matter.Sprite, player: Phaser.Physics.Matter.Sprite) {
         if (this.playerR.getData('hit') && this.playerB.getData('hit')) {
-            ball.setY(ball.y - 80);
+            ball.setY(ball.y - 40);
             ball.setVelocityX(ball.getVelocity().x * 0.1);
-            ball.setVelocityY(-20);
+            ball.setVelocityY(-10);
             return
         }
         // 計算擊球角度
         let angle = Phaser.Math.Angle.Between(player.x, player.y, ball.x, ball.y);
 
         // 設置球的速度
-        let speed = 17;  // 調整這個值來改變球的速度
+        let speed = this.SpeedSetting.B;  // 調整這個值來改變球的速度
 
         ball.setVelocity(
             Math.cos(angle) * speed,
-            Math.sin(angle) < 0 ? Math.sin(angle) * speed - 5 : 10,
+            Math.sin(angle) < 0 ? Math.sin(angle) * speed - 2.6 : 4,
         );
 
 
         // 根據玩家的移動添加額外的速度
-        if (player.y < 580) {
+        if (player.y < 290) {
             if (this.isFirst || player.getData('kill') == true || player.getData('onNet')) {
-                ball.setVelocityY(-20);
+                ball.setVelocityY(-10);
                 return
             }
-            if (Math.abs(player.body!.velocity.x) > 2.5 || Math.abs(ball.body!.velocity.x + player.body!.velocity.x * 4.35) > 20) {
+            if (Math.abs(player.body!.velocity.x) > 1.25 || Math.abs(ball.body!.velocity.x + player.body!.velocity.x * 2.2) > 10) {
                 player.setData('killCount', player.getData('killCount') + 1);
                 console.log("!")
             }
             player.setData('kill', true)
-            ball.setVelocityX(ball.body!.velocity.x + player.body!.velocity.x * 4.35);
-            ball.setVelocityY(ball.body!.velocity.y + 20);
-            // ball.setX(ball.x + player.body!.velocity.x * 8)
+            ball.setVelocityX(ball.body!.velocity.x + player.body!.velocity.x * 4.5);
+            ball.setVelocityY(ball.body!.velocity.y + speed*0.8);
         } else {
-            ball.setVelocityX(ball.body!.velocity.x + player.body!.velocity.x * 1.6 + (player.body!.velocity.y < -1 ? player.body!.velocity.x * 0.5 : 0));
-            ball.setVelocityY(ball.body!.velocity.y + (player.body!.velocity.y < -8 ? player.body!.velocity.y * 0.7 : 2));
+            ball.setVelocityX(ball.body!.velocity.x + player.body!.velocity.x * 1.8 + (player.body!.velocity.y < -0.5 ? player.body!.velocity.x * 0.5 : 0));
+            ball.setVelocityY(ball.body!.velocity.y + (player.body!.velocity.y < speed / -2 ? player.body!.velocity.y * 0.5 : 1));
         }
-        // console.log(player.body!.velocity.y)
+        console.log(player.body!.velocity.y)
     }
 
     resetGame() {
@@ -573,9 +593,9 @@ export class ArenaScene extends Phaser.Scene {
         this.playerB.setData('killCount', 0);
         this.playerR.setData('killCount', 0);
 
-        let countdownText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 300, '3', {
+        let countdownText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 150, '3', {
             fontFamily: 'Pacifico',
-            fontSize: '128px',
+            fontSize: '64px',
             color: '#ffffff'
         }).setOrigin(0.5).setDepth(2);
 
@@ -591,10 +611,10 @@ export class ArenaScene extends Phaser.Scene {
 
                 } else if (countdown == 2) {
                     countdownText.setText(countdown.toString());
-                    this.playerB.setPosition(500, 779);
-                    this.playerR.setPosition(1400, 779);
-                    this.ball.setPosition(950, -1000);
-                    this.ball.setVelocity(0, -500);
+                    this.playerB.setPosition(250, 390);
+                    this.playerR.setPosition(700, 390);
+                    this.ball.setPosition(475, -1000);
+                    this.ball.setVelocity(0, -250);
                     this.ball.setVisible(false);
 
                 } else if (countdown == 1) {
@@ -603,7 +623,7 @@ export class ArenaScene extends Phaser.Scene {
                 } else {
                     countdownText.destroy();
                     this.ball.setVisible(true);
-                    this.ball.setPosition(950, 0);
+                    this.ball.setPosition(475, 0);
                     this.ball.setVelocity(0, 0);
 
                     this.isGameResetting = false;

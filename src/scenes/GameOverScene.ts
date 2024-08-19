@@ -33,15 +33,15 @@ export class GameOverScene extends Phaser.Scene {
 
     create() {
         this.bg = this.add.image(0, 0, "bgImg").setOrigin(0).setDepth(0).setAlpha(0);
-        this.titleImg = this.add.image(this.game.renderer.width / 2 -20, 400, this.info).setDepth(1).setScale(1.4).setAlpha(0)
+        this.titleImg = this.add.image(this.game.renderer.width / 2 -10, 200, this.info).setDepth(1).setScale(1.4).setAlpha(0)
         this.time.addEvent({
             delay: 300,
             callback: () => {
                 this.scene.launch('PauseScene', { parent: "GAMEOVER" })
                 this.scene.bringToTop('PauseScene');
-                this.add.text(35, 5, this.score, {
+                this.add.text(17.5, 2.5, this.score, {
                     fontFamily: 'Pacifico',
-                    fontSize: '84px',
+                    fontSize: '42px',
                     color: '#ffffff'
                 }).setDepth(2);
             }

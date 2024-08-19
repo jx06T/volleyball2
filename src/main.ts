@@ -9,8 +9,8 @@ import { GameOverScene } from "./scenes/GameOverScene";
 const config = {
     // type: Phaser.AUTO,
     type: Phaser.WEBGL,
-    width: 1900,
-    height: 1000,
+    width: 950,
+    height: 500,
     parent: 'game-container',
     backgroundColor: '#931515',
     scale: {
@@ -20,8 +20,8 @@ const config = {
     physics: {
         default: 'matter',
         matter: {
-            gravity: { y: 1, x: 0 },
-            // debug: true
+            gravity: { y: 0.5, x: 0 },
+            debug: true
         }
     },
     scene: [
