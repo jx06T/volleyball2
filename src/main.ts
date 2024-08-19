@@ -20,7 +20,7 @@ const config = {
         default: 'matter',
         matter: {
             gravity: { y: 1, x: 0 },
-            // debug: true
+            debug: true
         }
     },
     scene: [

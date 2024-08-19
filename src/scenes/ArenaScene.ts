@@ -123,6 +123,12 @@ export class ArenaScene extends Phaser.Scene {
         this.ground = this.matter.add.image(950, 982, 'ground', undefined, { restitution: 0.4, isStatic: true }).setDepth(0);
 
         this.net = this.matter.add.image(950, 790, 'net', undefined, { restitution: 0.4, isStatic: true }).setDepth(0).setScale(0.7);
+        this.net.setBody({
+            type: "rectangle",
+            width: this.net.width * 0.58,
+            height: this.net.height * 0.75
+        })
+        this.matter.body.setStatic(this.net.body, true);
 
         if (this.isDesktop) {
             this.keys = {
@@ -460,7 +466,7 @@ export class ArenaScene extends Phaser.Scene {
         } else if (this.playerB.x < this.ball.x - 95 && this.ball.x < 900 && (this.ball.y > -5 || this.ball.y < -400 || this.isFirst)) {
             this.playerB.setVelocityX(Math.min(this.playerB.getVelocity().x + 0.62, 2 * speed));
         } else {
-            this.playerB.setVelocityX(this.playerB.getVelocity().x * 0.82);
+            this.playerB.setVelocityX(this.playerB.getVelocity().x * 0.85);
         }
         if (this.playerB.x < 100) {
             this.playerB.setVelocityX(8);
