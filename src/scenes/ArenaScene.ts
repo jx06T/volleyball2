@@ -14,6 +14,7 @@ interface point {
     LisD?: boolean;
 }
 
+
 export class ArenaScene extends Phaser.Scene {
 
     public handlePauseAction: Function = (action: string) => {
