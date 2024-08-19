@@ -33,7 +33,7 @@ export class GameOverScene extends Phaser.Scene {
 
     create() {
         this.bg = this.add.image(0, 0, "bgImg").setOrigin(0).setDepth(0).setAlpha(0);
-        this.titleImg = this.add.image(this.game.renderer.width / 2, 250, this.info).setDepth(1).setScale(1.1).setAlpha(0)
+        this.titleImg = this.add.image(this.game.renderer.width / 2 -20, 400, this.info).setDepth(1).setScale(1.4).setAlpha(0)
         this.time.addEvent({
             delay: 300,
             callback: () => {
@@ -51,8 +51,10 @@ export class GameOverScene extends Phaser.Scene {
 
     }
     update(time: number, delta: number): void {
-        const scale = 1 + Math.sin(time / 200) * 0.05;
-        this.titleImg.setScale(scale);
+        // const scale = 1.4 + Math.sin(time / 200) * 0.05;
+        const angle = -0.5 + Math.sin(time / 150) * 1;
+        // this.titleImg.setScale(scale);
+        this.titleImg.setAngle(angle);
         this.bg.setAlpha(this.bg.alpha + 0.01)
         this.titleImg.setAlpha(this.titleImg.alpha + 0.01)
     }

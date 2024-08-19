@@ -12,20 +12,22 @@ export class PauseScene extends Phaser.Scene {
             this.add.rectangle(0, 0, 1900, 1000, 0x000000, 0.2).setOrigin(0).setDepth(-1);
         }
 
-        const y = this.parent == "ARENA" ? 450 : 650
-        let reset = this.add.image(500, y, 'reset').setInteractive().setScale(1.1);
-        reset.on('pointerover', () => reset.setScale(1.2));
-        reset.on('pointerout', () => reset.setScale(1.1));
+        const y = this.parent == "ARENA" ? 450 : 720
+        const s = this.parent == "ARENA" ? 1.1 : 0.7
+        const s2 = this.parent == "ARENA" ? 0 : 210
+        let reset = this.add.image(500 + s2, y, 'reset').setInteractive().setScale(s);
+        reset.on('pointerover', () => reset.setScale(s + 0.1));
+        reset.on('pointerout', () => reset.setScale(s));
         reset.on('pointerup', () => this.returnToParent('reset'));
 
-        let play = this.add.image(980, y, 'play').setInteractive().setScale(1.3);
-        play.on('pointerover', () => play.setScale(1.4));
-        play.on('pointerout', () => play.setScale(1.3));
+        let play = this.add.image(960, y, 'play').setInteractive().setScale(s + 0.2);
+        play.on('pointerover', () => play.setScale(s + 0.3));
+        play.on('pointerout', () => play.setScale(s + 0.2));
         play.on('pointerup', () => this.returnToParent('resume'));
 
-        let home = this.add.image(1370, y, 'home2').setInteractive().setScale(1.1);
-        home.on('pointerover', () => home.setScale(1.2));
-        home.on('pointerout', () => home.setScale(1.1));
+        let home = this.add.image(1370 - s2, y, 'home2').setInteractive().setScale(s).setAngle(-1.9);
+        home.on('pointerover', () => home.setScale(s + 0.1));
+        home.on('pointerout', () => home.setScale(s));
         home.on('pointerup', () => this.returnToParent('home'));
 
     }

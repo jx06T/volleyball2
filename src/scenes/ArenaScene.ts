@@ -200,7 +200,7 @@ export class ArenaScene extends Phaser.Scene {
                     }
 
 
-                    const winScore = 11
+                    const winScore = 1
                     if (this.scoreB >= winScore || this.scoreR >= winScore) {
                         let black = this.add.rectangle(0, 0, 1900, 1000, 0x931515).setAlpha(0).setOrigin(0).setDepth(3);
                         let c = 0;
@@ -455,18 +455,21 @@ export class ArenaScene extends Phaser.Scene {
         if (Math.random() < 0.01 && this.playerB.getData('onGround')) {
             this.playerB.setVelocityY(-4 * speed);
         }
-        if (this.playerB.x > this.ball.x - 90 && (this.ball.y > -5 || this.ball.y < -360 || this.isFirst)) {
-            this.playerB.setVelocityX(-2 * speed);
-        } else if (this.playerB.x < this.ball.x - 90 && this.ball.x < 900 && (this.ball.y > -5 || this.ball.y < -360 || this.isFirst)) {
-            this.playerB.setVelocityX(2 * speed);
+        if (this.playerB.x > this.ball.x - 85 && (this.ball.y > -5 || this.ball.y < -400 || this.isFirst)) {
+            this.playerB.setVelocityX(Math.max(this.playerB.getVelocity().x - 0.62, -2 * speed));
+        } else if (this.playerB.x < this.ball.x - 95 && this.ball.x < 900 && (this.ball.y > -5 || this.ball.y < -400 || this.isFirst)) {
+            this.playerB.setVelocityX(Math.min(this.playerB.getVelocity().x + 0.62, 2 * speed));
         } else {
-            this.playerB.setVelocityX(0);
+            this.playerB.setVelocityX(this.playerB.getVelocity().x * 0.82);
+        }
+        if (this.playerB.x < 100) {
+            this.playerB.setVelocityX(8);
         }
     }
 
     update(time: number, delta: number): void {
 
-        if (this.ball.y < -70 && !this.isGameResetting) {
+        if (this.ball.y < -80 && !this.isGameResetting) {
             this.arrow.setVisible(true)
             this.arrow.setX(this.ball.x)
         } else {
