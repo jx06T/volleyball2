@@ -154,8 +154,8 @@ export class ArenaScene extends Phaser.Scene {
                 d: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.D)
             };
             this.cursors = this.input.keyboard!.createCursorKeys();
-            this.addBtn()
-            this.addTouchControls()
+            // this.addBtn()
+            // this.addTouchControls()
         } else {
             this.addBtn()
             this.addTouchControls()
