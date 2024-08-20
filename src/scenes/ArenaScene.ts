@@ -211,7 +211,7 @@ export class ArenaScene extends Phaser.Scene {
         this.addPhysics()
         this.resetGame()
 
-        this.graphics = this.add.graphics()
+        // this.graphics = this.add.graphics()
         // this.scene.launch('DebugScene')
 
     }
