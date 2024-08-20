@@ -615,7 +615,8 @@ export class ArenaScene extends Phaser.Scene {
             }
 
             player.setData('kill', true)
-            ball.setVelocityX(ballV.x + playerV.x * this.SpeedSetting.c4 * 4 * (v0 > 2 ? 1.5 : 1));
+            // ball.setVelocityX(ballV.x + playerV.x * this.SpeedSetting.c4 * 4 * (v0 > 2 ? 1.5 : 1));
+            ball.setVelocityX(ballV.x + playerV.x * 4 * (v0 > 2 ? 1.5 * this.SpeedSetting.c4 : 1));
             ball.setVelocityY(ballV.y + this.SpeedSetting.B);
 
         } else {
