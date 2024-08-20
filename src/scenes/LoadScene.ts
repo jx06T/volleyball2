@@ -9,7 +9,7 @@ import ground from "../assets/image/ground-small.png"
 import net from "../assets/image/net-small.png"
 import ball from "../assets/image/ball-small.png"
 import arrow from "../assets/image/arrow-small.png"
-import home from "../assets/image/pause2-small.png"
+import pause2 from "../assets/image/pause2-small.png"
 import btnLU from "../assets/image/btnLU-small.png"
 import btnRU from "../assets/image/btnRU-small.png"
 import btnU from "../assets/image/btnU-small.png"
@@ -49,7 +49,7 @@ export class LoadScene extends Phaser.Scene {
         this.load.image("net", net);
         this.load.image("ball", ball);
         this.load.image("arrow", arrow);
-        this.load.image("home", home);
+        this.load.image("pause2", pause2);
         this.load.image("btnLU", btnLU);
         this.load.image("btnRU", btnRU);
         this.load.image("btnU", btnU);

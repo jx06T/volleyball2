@@ -5,7 +5,7 @@ import { MenuScene } from "./scenes/MenuScene";
 import { ArenaScene } from "./scenes/ArenaScene";
 import { PauseScene } from "./scenes/PauseScene";
 import { GameOverScene } from "./scenes/GameOverScene";
-
+import { DebugScene } from "./scenes/DeBugScene";
 const config = {
     // type: Phaser.AUTO,
     type: Phaser.WEBGL,
@@ -21,7 +21,7 @@ const config = {
         default: 'matter',
         matter: {
             gravity: { y: 0.5, x: 0 },
-            debug: true
+            // debug: true
         }
     },
     scene: [
@@ -29,7 +29,8 @@ const config = {
         MenuScene,
         ArenaScene,
         PauseScene,
-        GameOverScene
+        GameOverScene,
+        DebugScene
     ]
 };
 
