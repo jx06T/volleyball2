@@ -141,7 +141,7 @@ export class ArenaScene extends Phaser.Scene {
         this.net.setBody({
             type: "rectangle",
             width: this.net.width * 0.58,
-            height: this.net.height * 0.73
+            height: this.net.height * 0.74
         })
 
         this.matter.body.setStatic(this.net.body, true);
@@ -500,7 +500,7 @@ export class ArenaScene extends Phaser.Scene {
         let s = this.SpeedSetting.S
 
         if (this.playerR.getData('killCount') > 4) {
-            s = s * 0.2
+            s = s * 0.4
         }
 
         const ballV = this.ball.getVelocity()
