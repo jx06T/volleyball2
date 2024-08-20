@@ -24,6 +24,8 @@ interface SpeedSetting {
     c1: number;
     c2: number;
     c3: number;
+    c4: number;
+    c5: number;
 }
 
 
@@ -68,11 +70,11 @@ export class ArenaScene extends Phaser.Scene {
     private isDesktop!: boolean;
     private mode: string = "";
 
-    private groundHeight: number = -140;
+    private groundHeight: number = -40;
 
     private btnR: btn = { x: 0, y: 0 };
     private btnL: btn = { x: 0, y: 0 };
-    private SpeedSetting: SpeedSetting = { LR: 4, U: 7.8, B: 11, BU: 8, S: 0.8, c1: 5, c2: 23, c3: 10 };
+    private SpeedSetting: SpeedSetting = { LR: 4, U: 7.8, B: 11, BU: 8, S: 0.8, c1: 5, c2: 23, c3: 10, c4: 1, c5: 1 };
 
     private graphics?: Phaser.GameObjects.Graphics
     constructor() {
@@ -89,7 +91,6 @@ export class ArenaScene extends Phaser.Scene {
     }
 
     create() {
-        this.groundHeight = -140
         this.isGameResetting = true
 
         this.ball = this.matter.add.sprite(475, -2000, "ball", undefined, { restitution: 0.95 }).setDepth(1).setScale(0.65);
@@ -133,8 +134,8 @@ export class ArenaScene extends Phaser.Scene {
         });
         this.playerR.setFixedRotation();
 
-
-        this.ground = this.matter.add.image(475, 491 + this.groundHeight, 'ground', undefined, { restitution: 0.4, isStatic: true }).setDepth(0);
+        console.log(this.groundHeight)
+        this.ground = this.matter.add.image(475, 500 + this.groundHeight, 'ground', undefined, { restitution: 0.4, isStatic: true }).setDepth(0);
 
         this.net = this.matter.add.image(475, 392.5 + this.groundHeight, 'net', undefined, { restitution: 0.4, isStatic: true }).setDepth(0).setScale(0.7);
         this.net.setBody({
@@ -153,20 +154,24 @@ export class ArenaScene extends Phaser.Scene {
                 d: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.D)
             };
             this.cursors = this.input.keyboard!.createCursorKeys();
+            this.addBtn()
+            this.addTouchControls()
         } else {
             this.addBtn()
             this.addTouchControls()
             // private SpeedSetting: SpeedSetting = { LR: 4, U: 7.8, B: 11, BU: 8, S: 0.8, c1: 5, c2: 23 };
 
-            this.matter.world.setGravity(0, 1.8);
-            this.SpeedSetting.LR = 10
-            this.SpeedSetting.U = 13.6
+            this.matter.world.setGravity(0, 1.4);
+            this.SpeedSetting.LR = 8
+            this.SpeedSetting.U = 12
             this.SpeedSetting.B = 10
             this.SpeedSetting.BU = 14
-            this.SpeedSetting.S = 1.4
+            this.SpeedSetting.S = 2
             this.SpeedSetting.c1 = 2
             this.SpeedSetting.c2 = 13
             this.SpeedSetting.c3 = 18
+            this.SpeedSetting.c4 = 0.8
+            this.SpeedSetting.c4 = 0.5
             // this.matter.world.engine.timing.timeScale = 1.5;
 
         }
@@ -206,7 +211,7 @@ export class ArenaScene extends Phaser.Scene {
         this.addPhysics()
         this.resetGame()
 
-        // this.graphics = this.add.graphics()
+        this.graphics = this.add.graphics()
         // this.scene.launch('DebugScene')
 
     }
@@ -368,13 +373,13 @@ export class ArenaScene extends Phaser.Scene {
     }
 
     addBtn(): void {
-        this.btnR.x = 790;
-        this.btnR.y = 280;
-        this.btnR.RU = this.add.image(this.btnR.x, this.btnR.y, "btnRU").setDepth(2).setAlpha(0.3).setScale(1.2)
-        this.btnR.LU = this.add.image(this.btnR.x, this.btnR.y, "btnLU").setDepth(2).setAlpha(0.3).setScale(1.2)
-        this.btnR.U = this.add.image(this.btnR.x, this.btnR.y, "btnU").setDepth(2).setAlpha(0.3).setScale(1.2)
-        this.btnR.RD = this.add.image(this.btnR.x, this.btnR.y, "btnRD").setDepth(2).setAlpha(0.3).setScale(1.2)
-        this.btnR.LD = this.add.image(this.btnR.x, this.btnR.y, "btnLD").setDepth(2).setAlpha(0.3).setScale(1.2)
+        this.btnR.x = 750;
+        this.btnR.y = 380;
+        this.btnR.RU = this.add.image(this.btnR.x, this.btnR.y, "btnRU").setDepth(2).setAlpha(0.3)
+        this.btnR.LU = this.add.image(this.btnR.x, this.btnR.y, "btnLU").setDepth(2).setAlpha(0.3)
+        this.btnR.U = this.add.image(this.btnR.x, this.btnR.y, "btnU").setDepth(2).setAlpha(0.3)
+        this.btnR.RD = this.add.image(this.btnR.x, this.btnR.y, "btnRD").setDepth(2).setAlpha(0.3)
+        this.btnR.LD = this.add.image(this.btnR.x, this.btnR.y, "btnLD").setDepth(2).setAlpha(0.3)
 
         // this.btnR.BC = this.add.image(this.btnR.x, this.btnR.y, "BC").setDepth(2).setAlpha(0.3).setScale(1)
         // this.btnR.SC = this.add.image(this.btnR.x, this.btnR.y, "SC").setDepth(2).setAlpha(0.3).setScale(1)
@@ -383,13 +388,13 @@ export class ArenaScene extends Phaser.Scene {
             return
         }
 
-        this.btnL.x = 180;
-        this.btnL.y = 280;
-        this.btnL.RU = this.add.image(this.btnL.x, this.btnL.y, "btnRU").setDepth(2).setAlpha(0.3).setScale(1.2)
-        this.btnL.LU = this.add.image(this.btnL.x, this.btnL.y, "btnLU").setDepth(2).setAlpha(0.3).setScale(1.2)
-        this.btnL.U = this.add.image(this.btnL.x, this.btnL.y, "btnU").setDepth(2).setAlpha(0.3).setScale(1.2)
-        this.btnL.RD = this.add.image(this.btnL.x, this.btnL.y, "btnRD").setDepth(2).setAlpha(0.3).setScale(1.2)
-        this.btnL.LD = this.add.image(this.btnL.x, this.btnL.y, "btnLD").setDepth(2).setAlpha(0.3).setScale(1.2)
+        this.btnL.x = 200;
+        this.btnL.y = 380;
+        this.btnL.RU = this.add.image(this.btnL.x, this.btnL.y, "btnRU").setDepth(2).setAlpha(0.3)
+        this.btnL.LU = this.add.image(this.btnL.x, this.btnL.y, "btnLU").setDepth(2).setAlpha(0.3)
+        this.btnL.U = this.add.image(this.btnL.x, this.btnL.y, "btnU").setDepth(2).setAlpha(0.3)
+        this.btnL.RD = this.add.image(this.btnL.x, this.btnL.y, "btnRD").setDepth(2).setAlpha(0.3)
+        this.btnL.LD = this.add.image(this.btnL.x, this.btnL.y, "btnLD").setDepth(2).setAlpha(0.3)
 
     }
 
@@ -424,16 +429,18 @@ export class ArenaScene extends Phaser.Scene {
             return
         }
 
-        if ((angle < 3.15 && angle > -0.1) || angle < -3) {
+        // if ((angle < 3.15 && angle > -0.1) || angle < -3) {
+        const c = 0
+        if ((angle < 3 && angle > 0.15)) {
             if (player.getData('onGround')) {
                 player.setVelocityY(-this.SpeedSetting.U * speed);
             }
 
-            if (angle > 2.2 || angle < -3) {
+            if (Math.abs(btn.x - pointer.x) > c && angle > 2.2) {
                 player.setVelocityX(this.SpeedSetting.LR * speed);
                 btn.RU?.setScale(1.15)
 
-            } else if (angle < 0.95) {
+            } else if (Math.abs(btn.x - pointer.x) > c && angle < 0.95) {
                 player.setVelocityX(-this.SpeedSetting.LR * speed);
                 btn.LU?.setScale(1.15)
 
@@ -443,11 +450,14 @@ export class ArenaScene extends Phaser.Scene {
             }
         }
 
-        if (angle > -1.5 && angle < -0.1) {
+        if (Math.abs(btn.x - pointer.x) < c) {
+            return
+        }
+        if (angle > -1.5 && angle < 0.15) {
             player.setVelocityX(-this.SpeedSetting.LR * speed);
             btn.LD?.setScale(1.15)
 
-        } else if (angle < -1.5 && angle > -3) {
+        } else if ((angle < -1.5 && angle > -3.15) || (angle > 3)) {
             player.setVelocityX(this.SpeedSetting.LR * speed);
             btn.RD?.setScale(1.15)
         }
@@ -496,9 +506,9 @@ export class ArenaScene extends Phaser.Scene {
         const ballV = this.ball.getVelocity()
         let vy = ballV.y == 0 ? 1 : ballV.y
         vy = ballV.y < 0 ? -6 * vy : vy
-        vy = Math.max(vy, 1)
+        vy = Math.max(vy, 1.5)
 
-        let b0 = Math.min((Math.max(0, 280 + this.groundHeight - this.ball.y) * 1.4), 160)
+        let b0 = Math.min((Math.max(0, 280 + this.groundHeight - this.ball.y) * 1.4 * this.SpeedSetting.c4), 160)
         const b1 = Math.min((Math.max(0, 180 + this.groundHeight - this.ball.y) * 1.4), 80)
 
         if (Math.abs(this.ball.x - 330) < 40) {
@@ -521,7 +531,7 @@ export class ArenaScene extends Phaser.Scene {
             this.playerB.setVelocityY(-this.SpeedSetting.U * speed);
         }
 
-        if (Math.abs(ballV.x) > this.SpeedSetting.c3 && Math.abs(this.playerB.x - this.ball.x) < 50 && Math.abs(this.playerB.y - this.ball.y - 150) < 30 && this.playerB.getData("onGround")) {
+        if (ballV.y > 0 && Math.abs(ballV.x) > this.SpeedSetting.c3 && Math.abs(this.playerB.x - this.ball.x) < 50 && Math.abs(this.playerB.y - this.ball.y - 150) < 30 && this.playerB.getData("onGround")) {
             this.playerB.setVelocityY(-this.SpeedSetting.U * speed);
         }
 
@@ -605,12 +615,12 @@ export class ArenaScene extends Phaser.Scene {
             }
 
             player.setData('kill', true)
-            ball.setVelocityX(ballV.x + playerV.x * 4 * (v0 > 2 ? 1.5 : 1));
-            ball.setVelocityY(ballV.y + this.SpeedSetting.B * 1);
+            ball.setVelocityX(ballV.x + playerV.x * this.SpeedSetting.c4 * 4 * (v0 > 2 ? 1.5 : 1));
+            ball.setVelocityY(ballV.y + this.SpeedSetting.B);
 
         } else {
-            ball.setVelocityX(ballV.x + playerV.x * 1.5 + (playerV.y < -0.5 ? playerV.x * 0.7 : 0));
-            ball.setVelocityY(ballV.y + (playerV.y < -0.5 ? playerV.y * 1 : this.SpeedSetting.BU / -5.4));
+            ball.setVelocityX(ballV.x + playerV.x * 1.5 + (playerV.y < -0.5 ? playerV.x * 0.7 * this.SpeedSetting.c4 : 0));
+            ball.setVelocityY(ballV.y + (playerV.y < -0.5 ? playerV.y * this.SpeedSetting.c5 : this.SpeedSetting.BU / -5.4));
         }
     }
 
@@ -636,8 +646,8 @@ export class ArenaScene extends Phaser.Scene {
                 countdownText.setText(countdown.toString());
 
                 if (countdown == 2) {
-                    this.playerB.setPosition(250, 390);
-                    this.playerR.setPosition(700, 390);
+                    this.playerB.setPosition(250, 390 + this.groundHeight);
+                    this.playerR.setPosition(700, 390 + this.groundHeight);
                     this.ball.setPosition(475, -1000);
                     this.ball.setVelocity(0, -250);
                     this.ball.setVisible(false);
