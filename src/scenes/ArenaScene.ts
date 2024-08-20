@@ -445,7 +445,7 @@ export class ArenaScene extends Phaser.Scene {
 
     addTouchControls(): void {
 
-        const handlePointer = (pointer: Phaser.Input.Pointer, isDown: boolean, up: boolean = false) => {
+        const handlePointer = (pointer: Phaser.Input.Pointer, isDown: boolean) => {
             this.moveByPoint(pointer, isDown);
         };
 
@@ -460,7 +460,7 @@ export class ArenaScene extends Phaser.Scene {
         });
 
         this.input.on('pointerup', (pointer: Phaser.Input.Pointer) => {
-            handlePointer(pointer, false, true);
+            handlePointer(pointer, false);
         });
 
         this.input.on('pointerout', (pointer: Phaser.Input.Pointer) => {
