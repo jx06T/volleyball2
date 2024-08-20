@@ -171,7 +171,7 @@ export class ArenaScene extends Phaser.Scene {
             this.SpeedSetting.c2 = 13
             this.SpeedSetting.c3 = 18
             this.SpeedSetting.c4 = 0.8
-            this.SpeedSetting.c4 = 0.5
+            this.SpeedSetting.c5 = 0.7
             // this.matter.world.engine.timing.timeScale = 1.5;
 
         }
@@ -500,7 +500,7 @@ export class ArenaScene extends Phaser.Scene {
         let s = this.SpeedSetting.S
 
         if (this.playerR.getData('killCount') > 4) {
-            s = s * 0.4
+            s = s * 0.4 * this.SpeedSetting.c4
         }
 
         const ballV = this.ball.getVelocity()
