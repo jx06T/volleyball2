@@ -26,9 +26,6 @@ import TBW from "../assets/image/TBW-small.png"
 import TYL from "../assets/image/TYL-small.png"
 import TYW from "../assets/image/TYW-small.png"
 
-import BC from "../assets/image/Bcircle-small.png"
-import SC from "../assets/image/Scircle-small.png"
-
 export class LoadScene extends Phaser.Scene {
     constructor() {
         super({
@@ -68,9 +65,6 @@ export class LoadScene extends Phaser.Scene {
         this.load.image("TBW", TBW);
         this.load.image("TYL", TYL);
         this.load.image("TYW", TYW);
-
-        this.load.image("BC", BC);
-        this.load.image("SC", SC);
     }
 
     loadSprites(frameConfig?: Phaser.Types.Loader.FileTypes.ImageFrameConfig) {
