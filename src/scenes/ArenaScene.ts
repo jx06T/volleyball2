@@ -208,12 +208,15 @@ export class ArenaScene extends Phaser.Scene {
             this.scene.pause()
             this.scene.launch('PauseScene', { parent: "ARENA" })
         })
+
+        if (drawDebug) {
+            this.graphics = this.add.graphics()
+            this.scene.launch('DebugScene')
+        }
+        this.matter.world.drawDebug = drawDebug;
+
         this.addPhysics()
         this.resetGame()
-
-        // this.graphics = this.add.graphics()
-        // this.scene.launch('DebugScene')
-
     }
 
     landingCheck(): void {
@@ -300,14 +303,14 @@ export class ArenaScene extends Phaser.Scene {
                 if ((bodyA === this.ball.body && bodyB === this.playerB.body) ||
                     (bodyA === this.playerB.body && bodyB === this.ball.body)) {
                     this.playerB.setData('hit', true);
-                    pair.isActive = false;
+                    // pair.isActive = false;
                     this.hitBall(this.ball, this.playerB, Math.abs(this.ball.getVelocity().x));
                 }
 
                 if ((bodyA === this.ball.body && bodyB === this.playerR.body) ||
                     (bodyA === this.playerR.body && bodyB === this.ball.body)) {
                     this.playerR.setData('hit', true);
-                    pair.isActive = false;
+                    // pair.isActive = false;
                     this.hitBall(this.ball, this.playerR, Math.abs(this.ball.getVelocity().x));
                 }
             });
@@ -589,7 +592,7 @@ export class ArenaScene extends Phaser.Scene {
     }
 
     hitBall(ball: Phaser.Physics.Matter.Sprite, player: Phaser.Physics.Matter.Sprite, v0: number) {
-        let speed = this.SpeedSetting.B;
+        // let speed = this.SpeedSetting.B;
         const angle = Phaser.Math.Angle.Between(player.x, player.y, ball.x, ball.y);
 
         ball.setVelocity(
