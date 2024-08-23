@@ -209,11 +209,11 @@ export class ArenaScene extends Phaser.Scene {
             this.scene.launch('PauseScene', { parent: "ARENA" })
         })
 
-        if (drawDebug) {
+        if (window.drawDebug) {
             this.graphics = this.add.graphics()
             this.scene.launch('DebugScene')
         }
-        this.matter.world.drawDebug = drawDebug;
+        this.matter.world.drawDebug = window.drawDebug;
 
         this.addPhysics()
         this.resetGame()
@@ -514,7 +514,8 @@ export class ArenaScene extends Phaser.Scene {
         let b0 = Math.min((Math.max(0, 280 + this.groundHeight - this.ball.y) * 1.4 * this.SpeedSetting.c4), 160)
         const b1 = Math.min((Math.max(0, 180 + this.groundHeight - this.ball.y) * 1.4), 80)
 
-        if (Math.abs(this.ball.x - 330) < 40) {
+        console.log(ballV.x)
+        if (Math.abs(this.ball.x - 330) < 40 || ballV.x > 6) {
             b0 = b0 * 0.5
         }
 

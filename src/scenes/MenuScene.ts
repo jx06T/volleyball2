@@ -17,9 +17,9 @@ export class MenuScene extends Phaser.Scene {
         let count = 0
         this.titleImg.on("pointerup", () => {
             count += 1
-            if (count > 4) {
+            if (count > 4 && !window.drawDebug) {
                 alert("d")
-                drawDebug = true;
+                window.drawDebug = true;
             }
         })
 
